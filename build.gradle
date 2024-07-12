@@ -20,13 +20,14 @@ repositories {
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT"
-    implementation 'com.squareup.okhttp3:okhttp:4.9.3'
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+    //implementation 'org.apache.httpcomponents.client5:httpclient5:5.4-beta1'
     implementation 'org.json:json:20231013'
 }
 
 shadowJar {
     archiveFileName = "MineChatGPT-${project.version}.jar"
-    relocate 'okhttp3', 'com.ddaodan.minechatgpt.libs.okhttp3'
+    relocate 'org.apache.http', 'com.ddaodan.shaded.org.apache.http'
     relocate 'org.json', 'com.ddaodan.minechatgpt.libs.org.json'
 }
 

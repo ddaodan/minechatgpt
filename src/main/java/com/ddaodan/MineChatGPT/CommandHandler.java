@@ -3,12 +3,15 @@ package com.ddaodan.MineChatGPT;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.ChatColor;
-import okhttp3.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
@@ -34,49 +37,49 @@ public class CommandHandler implements CommandExecutor {
             String subCommand = args[0];
             if (subCommand.equalsIgnoreCase("reload")) {
                 if (!sender.hasPermission("minechatgpt.reload")) {
-                    sender.sendMessage(ChatColor.RED + String.format(configManager.getNoPermissionMessage(), "minechatgpt.reload"));
+                    sender.sendMessage(configManager.getNoPermissionMessage().replace("%s", "minechatgpt.reload"));
                     return true;
                 }
                 configManager.reloadConfig();
-                sender.sendMessage(ChatColor.GREEN + configManager.getReloadMessage());
+                sender.sendMessage(configManager.getReloadMessage());
                 return true;
             } else if (subCommand.equalsIgnoreCase("model")) {
                 if (!sender.hasPermission("minechatgpt.model")) {
-                    sender.sendMessage(ChatColor.RED + String.format(configManager.getNoPermissionMessage(), "minechatgpt.model"));
+                    sender.sendMessage(configManager.getNoPermissionMessage().replace("%s", "minechatgpt.model"));
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(ChatColor.RED + configManager.getUsageMessage());
+                    sender.sendMessage(configManager.getUsageMessage());
                     return true;
                 }
                 String model = args[1];
                 List<String> models = configManager.getModels();
                 if (models.contains(model)) {
                     // Logic to switch model
-                    sender.sendMessage(ChatColor.GREEN + String.format(configManager.getModelSwitchMessage(), model));
+                    sender.sendMessage(configManager.getModelSwitchMessage().replace("%s", model));
                 } else {
-                    sender.sendMessage(ChatColor.RED + configManager.getInvalidModelMessage());
+                    sender.sendMessage(configManager.getInvalidModelMessage());
                 }
                 return true;
             } else if (subCommand.equalsIgnoreCase("modellist")) {
                 if (!sender.hasPermission("minechatgpt.modellist")) {
-                    sender.sendMessage(ChatColor.RED + String.format(configManager.getNoPermissionMessage(), "minechatgpt.modellist"));
+                    sender.sendMessage(configManager.getNoPermissionMessage().replace("%s", "minechatgpt.modellist"));
                     return true;
                 }
                 List<String> models = configManager.getModels();
-                sender.sendMessage(ChatColor.YELLOW + configManager.getAvailableModelsMessage());
+                sender.sendMessage(configManager.getAvailableModelsMessage());
                 for (String model : models) {
-                    sender.sendMessage(ChatColor.YELLOW + "- " + model);
+                    sender.sendMessage("- " + model);
                 }
                 return true;
             } else {
                 if (!sender.hasPermission("minechatgpt.use")) {
-                    sender.sendMessage(ChatColor.RED + String.format(configManager.getNoPermissionMessage(), "minechatgpt.use"));
+                    sender.sendMessage(configManager.getNoPermissionMessage().replace("%s", "minechatgpt.use"));
                     return true;
                 }
                 String question = String.join(" ", args);
                 // Logic to send question to ChatGPT
-                sender.sendMessage(ChatColor.AQUA + String.format(configManager.getQuestionMessage(), question));
+                sender.sendMessage(configManager.getQuestionMessage().replace("%s", question));
                 askChatGPT(sender, question);
                 return true;
             }
@@ -85,9 +88,6 @@ public class CommandHandler implements CommandExecutor {
     }
 
     private void askChatGPT(CommandSender sender, String question) {
-        OkHttpClient client = new OkHttpClient();
-
-        MediaType mediaType = MediaType.parse("application/json");
         JSONObject json = new JSONObject();
         json.put("model", configManager.getDefaultModel());
         JSONArray messages = new JSONArray();
@@ -97,44 +97,35 @@ public class CommandHandler implements CommandExecutor {
         messages.put(message);
         json.put("messages", messages);
 
-        RequestBody body = RequestBody.create(mediaType, json.toString());
-        Request request = new Request.Builder()
-                .url(configManager.getBaseUrl() + "/chat/completions")
-                .post(body)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "Bearer " + configManager.getApiKey())
-                .build();
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost request = new HttpPost(configManager.getBaseUrl() + "/chat/completions");
+            request.setHeader("Content-Type", "application/json");
+            request.setHeader("Authorization", "Bearer " + configManager.getApiKey());
+            request.setEntity(new StringEntity(json.toString(), "UTF-8"));
 
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                logger.log(Level.SEVERE, "Failed to contact ChatGPT: " + e.getMessage(), e);
-                sender.sendMessage(ChatColor.RED + configManager.getChatGPTErrorMessage());
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
+            try (CloseableHttpResponse response = httpClient.execute(request)) {
+                if (response.getStatusLine().getStatusCode() == 200) {
+                    String responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
                     JSONObject jsonResponse = new JSONObject(responseBody);
                     String answer = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
-                    sender.sendMessage(ChatColor.AQUA + String.format(configManager.getChatGPTResponseMessage(), answer));
+                    sender.sendMessage(configManager.getChatGPTResponseMessage().replace("%s", answer));
                 } else {
-                    String errorBody = response.body().string();
+                    String errorBody = EntityUtils.toString(response.getEntity(), "UTF-8");
                     logger.log(Level.SEVERE, "Failed to get a response from ChatGPT: " + errorBody);
-                    sender.sendMessage(ChatColor.RED + configManager.getChatGPTErrorMessage());
+                    sender.sendMessage(configManager.getChatGPTErrorMessage());
                 }
-                response.close();
             }
-        });
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to contact ChatGPT: " + e.getMessage(), e);
+            sender.sendMessage(configManager.getChatGPTErrorMessage());
+        }
     }
 
     private void sendHelpMessage(CommandSender sender) {
-        sender.sendMessage(ChatColor.YELLOW + configManager.getHelpMessage());
-        sender.sendMessage(ChatColor.YELLOW + configManager.getHelpAskMessage());
-        sender.sendMessage(ChatColor.YELLOW + configManager.getHelpReloadMessage());
-        sender.sendMessage(ChatColor.YELLOW + configManager.getHelpModelMessage());
-        sender.sendMessage(ChatColor.YELLOW + configManager.getHelpModelListMessage());
+        sender.sendMessage(configManager.getHelpMessage());
+        sender.sendMessage(configManager.getHelpAskMessage());
+        sender.sendMessage(configManager.getHelpReloadMessage());
+        sender.sendMessage(configManager.getHelpModelMessage());
+        sender.sendMessage(configManager.getHelpModelListMessage());
     }
 }

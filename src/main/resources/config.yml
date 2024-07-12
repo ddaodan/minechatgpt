@@ -9,22 +9,33 @@ api:
 models:
   # OpenAI ChatGPT
   - "gpt-3.5-turbo"
+  - "gpt-3.5-turbo-instruct"
   - "gpt-4"
+  - "gpt-4-turbo"
+  - "gpt-4-turbo-preview"
+  - "gpt-4o"
+  # Google Gemini
+  # - "gemini-pro"
+  # - "gemini-1.5-pro"
+  # Anthropic Claude
+  # - "claude-3-opus"
+  # - "claude-3-5-sonnet"
+  # And more...
 # The default model to use
 default_model: "gpt-3.5-turbo"
 # Message settings
 messages:
-  reload: "Configuration reloaded successfully!"
-  help: "===== MineChatGPT Help ====="
-  help_ask: "/chatgpt <text> - Ask ChatGPT a question."
-  help_reload: "/chatgpt reload - Reload the configuration file."
-  help_model: "/chatgpt model <model_name> - Switch to a different model."
-  help_modellist: "/chatgpt modellist - List available models."
-  usage: "Usage: /chatgpt model <model_name>"
-  model_switch: "Model switched to %s"
-  chatgpt_error: "Failed to contact ChatGPT."
-  chatgpt_response: "ChatGPT: %s"
-  question: "Question: %s"
-  invalid_model: "Invalid model. Use /chatgpt modellist to see available models."
-  available_models: "Available models:"
-  no_permission: "You do not have permission to use this command. Required permission: %s"
+  reload: "&aConfiguration reloaded successfully!"
+  help: "&e===== MineChatGPT Help ====="
+  help_ask: "&e/chatgpt <text> - Ask ChatGPT a question."
+  help_reload: "&e/chatgpt reload - Reload the configuration file."
+  help_model: "&e/chatgpt model <model_name> - Switch to a different model."
+  help_modellist: "&e/chatgpt modellist - List available models."
+  usage: "&cUsage: /chatgpt model <model_name>"
+  model_switch: "&aModel switched to %s"
+  chatgpt_error: "&cFailed to contact ChatGPT."
+  chatgpt_response: "&bChatGPT: %s"
+  question: "&bYou: %s"
+  invalid_model: "&cInvalid model. Use /chatgpt modellist to see available models."
+  available_models: "&eAvailable models:"
+  no_permission: "&cYou do not have permission to use this command. Required permission: %s"

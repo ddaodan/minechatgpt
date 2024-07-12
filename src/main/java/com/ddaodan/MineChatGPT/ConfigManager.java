@@ -1,5 +1,6 @@
 package com.ddaodan.MineChatGPT;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import java.util.List;
 
@@ -17,6 +18,9 @@ public class ConfigManager {
         config = plugin.getConfig();
     }
 
+    private String translateColorCodes(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
     public String getApiKey() {
         return config.getString("api.key");
     }
@@ -30,7 +34,7 @@ public class ConfigManager {
     }
 
     public String getReloadMessage() {
-        return config.getString("messages.reload");
+        return translateColorCodes(config.getString("messages.reload"));
     }
 
     public List<String> getModels() {
@@ -38,54 +42,54 @@ public class ConfigManager {
     }
 
     public String getHelpMessage() {
-        return config.getString("messages.help");
+        return translateColorCodes(config.getString("messages.help"));
     }
 
     public String getHelpAskMessage() {
-        return config.getString("messages.help_ask");
-    }
-
-    public String getHelpModelListMessage() {
-        return config.getString("messages.help_modellist");
+        return translateColorCodes(config.getString("messages.help_ask"));
     }
 
     public String getHelpReloadMessage() {
-        return config.getString("messages.help_reload");
+        return translateColorCodes(config.getString("messages.help_reload"));
     }
 
     public String getHelpModelMessage() {
-        return config.getString("messages.help_model");
+        return translateColorCodes(config.getString("messages.help_model"));
+    }
+
+    public String getHelpModelListMessage() {
+        return translateColorCodes(config.getString("messages.help_modellist"));
     }
 
     public String getUsageMessage() {
-        return config.getString("messages.usage");
+        return translateColorCodes(config.getString("messages.usage"));
     }
 
     public String getModelSwitchMessage() {
-        return config.getString("messages.model_switch");
+        return translateColorCodes(config.getString("messages.model_switch"));
     }
 
     public String getChatGPTErrorMessage() {
-        return config.getString("messages.chatgpt_error");
+        return translateColorCodes(config.getString("messages.chatgpt_error"));
     }
 
     public String getChatGPTResponseMessage() {
-        return config.getString("messages.chatgpt_response");
+        return translateColorCodes(config.getString("messages.chatgpt_response"));
     }
 
     public String getQuestionMessage() {
-        return config.getString("messages.question");
+        return translateColorCodes(config.getString("messages.question"));
     }
 
     public String getInvalidModelMessage() {
-        return config.getString("messages.invalid_model");
+        return translateColorCodes(config.getString("messages.invalid_model"));
     }
 
     public String getAvailableModelsMessage() {
-        return config.getString("messages.available_models");
+        return translateColorCodes(config.getString("messages.available_models"));
     }
 
     public String getNoPermissionMessage() {
-        return config.getString("messages.no_permission");
+        return translateColorCodes(config.getString("messages.no_permission"));
     }
 }

@@ -7,7 +7,7 @@ description: A Spigot plugin for interacting with ChatGPT
 commands:
   chatgpt:
     description: Interact with ChatGPT
-    usage: /chatgpt <question>
+    usage: /chatgpt <text>
 permissions:
   minechatgpt.use:
     description: Allows using the /chatgpt command to interact with AI
