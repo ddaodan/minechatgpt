@@ -3,12 +3,6 @@ package com.ddaodan.MineChatGPT;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,6 +10,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
 
+import jodd.http.HttpRequest;
+import jodd.http.HttpResponse;
 public class CommandHandler implements CommandExecutor {
     private final Main plugin;
     private final ConfigManager configManager;
@@ -97,26 +93,21 @@ public class CommandHandler implements CommandExecutor {
         messages.put(message);
         json.put("messages", messages);
 
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost request = new HttpPost(configManager.getBaseUrl() + "/chat/completions");
-            request.setHeader("Content-Type", "application/json");
-            request.setHeader("Authorization", "Bearer " + configManager.getApiKey());
-            request.setEntity(new StringEntity(json.toString(), "UTF-8"));
+        HttpRequest request = HttpRequest.post(configManager.getBaseUrl() + "/chat/completions")
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + configManager.getApiKey())
+                .body(json.toString());
 
-            try (CloseableHttpResponse response = httpClient.execute(request)) {
-                if (response.getStatusLine().getStatusCode() == 200) {
-                    String responseBody = EntityUtils.toString(response.getEntity(), "UTF-8");
-                    JSONObject jsonResponse = new JSONObject(responseBody);
-                    String answer = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
-                    sender.sendMessage(configManager.getChatGPTResponseMessage().replace("%s", answer));
-                } else {
-                    String errorBody = EntityUtils.toString(response.getEntity(), "UTF-8");
-                    logger.log(Level.SEVERE, "Failed to get a response from ChatGPT: " + errorBody);
-                    sender.sendMessage(configManager.getChatGPTErrorMessage());
-                }
-            }
-        } catch (Exception e) {
-            logger.log(Level.SEVERE, "Failed to contact ChatGPT: " + e.getMessage(), e);
+        HttpResponse response = request.send();
+
+        if (response.statusCode() == 200) {
+            String responseBody = response.bodyText();
+            JSONObject jsonResponse = new JSONObject(responseBody);
+            String answer = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+            sender.sendMessage(configManager.getChatGPTResponseMessage().replace("%s", answer));
+        } else {
+            String errorBody = response.bodyText();
+            logger.log(Level.SEVERE, "Failed to get a response from ChatGPT: " + errorBody);
             sender.sendMessage(configManager.getChatGPTErrorMessage());
         }
     }

@@ -20,8 +20,7 @@ repositories {
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT"
-    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
-    //implementation 'org.apache.httpcomponents.client5:httpclient5:5.4-beta1'
+    implementation 'org.jodd:jodd-http:6.3.0'
     implementation 'org.json:json:20231013'
 }
 
