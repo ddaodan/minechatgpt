@@ -1,0 +1,23 @@
+name: MineChatGPT
+version: '${version}'
+main: com.ddaodan.MineChatGPT.Main
+author: ddaodan
+description: A Spigot plugin for interacting with ChatGPT
+
+commands:
+  chatgpt:
+    description: Interact with ChatGPT
+    usage: /chatgpt <question>
+permissions:
+  minechatgpt.use:
+    description: Allows using the /chatgpt command to interact with AI
+    default: true
+  minechatgpt.reload:
+    description: Allows reloading the configuration file
+    default: op
+  minechatgpt.model:
+    description: Allows switching models
+    default: op
+  minechatgpt.modellist:
+    description: Allows listing available models
+    default: op
