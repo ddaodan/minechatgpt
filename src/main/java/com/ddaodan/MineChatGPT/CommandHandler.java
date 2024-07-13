@@ -45,7 +45,7 @@ public class CommandHandler implements CommandExecutor {
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(configManager.getUsageMessage());
+                    sender.sendMessage(configManager.getHelpModelMessage());
                     return true;
                 }
                 String model = args[1];

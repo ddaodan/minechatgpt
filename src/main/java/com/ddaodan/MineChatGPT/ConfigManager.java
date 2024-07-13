@@ -21,6 +21,9 @@ public class ConfigManager {
     private String translateColorCodes(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
+    public String getConfigVersion() {
+        return config.getString("version", "1.0");
+    }
     public String getApiKey() {
         return config.getString("api.key");
     }
@@ -59,10 +62,6 @@ public class ConfigManager {
 
     public String getHelpModelListMessage() {
         return translateColorCodes(config.getString("messages.help_modellist"));
-    }
-
-    public String getUsageMessage() {
-        return translateColorCodes(config.getString("messages.usage"));
     }
 
     public String getModelSwitchMessage() {

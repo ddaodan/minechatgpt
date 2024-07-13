@@ -31,7 +31,6 @@ messages:
   help_reload: "&e/chatgpt reload - Reload the configuration file."
   help_model: "&e/chatgpt model <model_name> - Switch to a different model."
   help_modellist: "&e/chatgpt modellist - List available models."
-  usage: "&cUsage: /chatgpt model <model_name>"
   model_switch: "&aModel switched to %s"
   chatgpt_error: "&cFailed to contact ChatGPT."
   chatgpt_response: "&bChatGPT: %s"
@@ -39,3 +38,5 @@ messages:
   invalid_model: "&cInvalid model. Use /chatgpt modellist to see available models."
   available_models: "&eAvailable models:"
   no_permission: "&cYou do not have permission to use this command. Required permission: %s"
+# DO NOT EDIT!!!!!
+version: 2.1

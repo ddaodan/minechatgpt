@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com'
-version = '2.0'
+version = '2.1'
 
 repositories {
     mavenCentral()
@@ -16,17 +16,21 @@ repositories {
         name = "sonatype"
         url = "https://oss.sonatype.org/content/groups/public/"
     }
+    maven {
+        url = 'https://repo.codemc.io/repository/maven-public/'
+    }
 }
 
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT"
+    compileOnly 'org.bstats:bstats-bukkit:3.0.2'
     implementation 'org.jodd:jodd-http:6.3.0'
     implementation 'org.json:json:20231013'
 }
 
 shadowJar {
     archiveFileName = "MineChatGPT-${project.version}.jar"
-    relocate 'org.apache.http', 'com.ddaodan.shaded.org.apache.http'
+    relocate 'jodd', 'com.ddaodan.shaded.jodd'
     relocate 'org.json', 'com.ddaodan.minechatgpt.libs.org.json'
 }
 

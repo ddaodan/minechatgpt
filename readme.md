@@ -1,5 +1,6 @@
 # MineChatGPT
-在Minecraft中与ChatGPT交流
+在Minecraft中与ChatGPT交流  
+理论支持全版本，欢迎测试
 
 所有的代码都是ChatGPT写的哦
 
@@ -32,7 +33,7 @@
 # API 相关设置
 api:
   # 你的 OpenAI API key，用于身份验证
-  # 获取 API key 的方法：访问 //platform.openai.com/account/api-keys 并创建一个新的 API key
+  # 获取 API key 的方法：访问 https://platform.openai.com/account/api-keys 并创建一个新的 API key
   key: "sk-your_openai_api_key"
   # OpenAI API 的基础 URL，用于构建请求
   base_url: "https://api.openai.com/v1"
@@ -62,7 +63,6 @@ messages:
   help_reload: "&e/chatgpt reload - 重新加载配置文件"
   help_model: "&e/chatgpt model <model_name> - 切换至其他模型"
   help_modellist: "&e/chatgpt modellist - 可用的模型列表"
-  usage: "&c输入： /chatgpt model <model_name>"
   model_switch: "&a已切换至模型 %s"
   chatgpt_error: "&c无法联系ChatGPT。"
   chatgpt_response: "&bChatGPT: %s"
@@ -70,7 +70,19 @@ messages:
   invalid_model: "&c模型无效。使用 /chatgpt modellist 查看可用模型。"
   available_models: "&e可用模型列表："
   no_permission: "&c你没有权限使用这个指令。需要的权限：%s"
+# 不要动！！！！！
+version: 2.1
 ```
+
+## 指令与权限
+|指令|权限|描述|
+|-|-|-|
+|`/chatgpt`|chatgpt.use|查看插件帮助|
+|`/chatgpt <text>`|chatgpt.use|向ChatGPT提问|
+|`/chatgpt reload`|chatgpt.reload|重新加载配置文件|
+|`/chatgpt model <model_name>`|chatgpt.model|切换至其他模型|
+|`/chatgpt modellist`|chatgpt.modellist|查看可用的模型列表|
+
 ## 兼容的版本
 ✔ = 完全支持  
 ？ = 部分支持  
@@ -87,6 +99,11 @@ messages:
 检查控制台输出的错误内容。
 ### `connect timeout` `connect reset`
 检查`config.yml`中的`base_url`能否正常访问。如果你无法连接到OpenAI官方的API地址，可以考虑使用其他反代。
-
+### 我可以添加其他模型吗？
+可以，只要模型支持OpenAI的API，就可以使用。
+## 我没有ChatGPT的账号，可以用吗？
+可以，目前有很多代理网站，可以很轻松地使用，而且还支持其他模型，费用通常来说也会比官方便宜。如果你愿意，也可以使用我的代理，目前仅在我的QQ群：226385797中提供。
+### 是否会支持Folia
+不会。Folia仍然在开发中，短期内不会支持。
 ## 赞助
 ![afdian-ddaodan.jpeg](https://i.ddaodan.cn/images/afdian-ddaodan.jpeg)
