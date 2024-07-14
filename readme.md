@@ -63,6 +63,7 @@ messages:
   help_reload: "&e/chatgpt reload - 重新加载配置文件"
   help_model: "&e/chatgpt model <model_name> - 切换至其他模型"
   help_modellist: "&e/chatgpt modellist - 可用的模型列表"
+  current_model_info: "&e当前模型：%s，输入 /chatgpt model <model_name> 来切换模型。"
   model_switch: "&a已切换至模型 %s"
   chatgpt_error: "&c无法联系ChatGPT。"
   chatgpt_response: "&bChatGPT: %s"
@@ -88,6 +89,7 @@ version: 2.1
 ？ = 部分支持  
 × = 不支持  
 只列出经过测试的版本
+
 |服务端|支持情况|
 |-|-|
 |Mohist 1.20.1|✔|

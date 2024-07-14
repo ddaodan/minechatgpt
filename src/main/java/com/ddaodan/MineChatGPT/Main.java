@@ -19,6 +19,7 @@ public final class Main extends JavaPlugin {
         tabCompleter = new MineChatGPTTabCompleter(configManager);
         Objects.requireNonNull(getCommand("chatgpt")).setExecutor(commandHandler);
         Objects.requireNonNull(getCommand("chatgpt")).setTabCompleter(tabCompleter);
+        checkAndUpdateConfig();
         // Initialize bStats
         int pluginId = 22635;
         new Metrics(this, pluginId);
@@ -34,10 +35,6 @@ public final class Main extends JavaPlugin {
         String pluginVersion = getDescription().getVersion();
 
         if (!currentVersion.equals(pluginVersion)) {
-            // 备份旧配置文件
-            saveConfig();
-            saveResource("config.old.yml", true);
-
             // 加载默认配置文件
             FileConfiguration defaultConfig = getConfig();
             reloadConfig();

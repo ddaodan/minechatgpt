@@ -45,13 +45,15 @@ public class CommandHandler implements CommandExecutor {
                     return true;
                 }
                 if (args.length < 2) {
-                    sender.sendMessage(configManager.getHelpModelMessage());
+                    String currentModel = configManager.getCurrentModel();
+                    sender.sendMessage(configManager.getCurrentModelInfoMessage().replace("%s", currentModel));
                     return true;
                 }
                 String model = args[1];
                 List<String> models = configManager.getModels();
                 if (models.contains(model)) {
                     // Logic to switch model
+                    configManager.setCurrentModel(model);
                     sender.sendMessage(configManager.getModelSwitchMessage().replace("%s", model));
                 } else {
                     sender.sendMessage(configManager.getInvalidModelMessage());
@@ -92,6 +94,7 @@ public class CommandHandler implements CommandExecutor {
         message.put("content", question);
         messages.put(message);
         json.put("messages", messages);
+        json.put("model", configManager.getCurrentModel());
 
         HttpRequest request = HttpRequest.post(configManager.getBaseUrl() + "/chat/completions")
                 .header("Content-Type", "application/json")

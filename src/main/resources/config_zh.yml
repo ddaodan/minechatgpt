@@ -31,6 +31,7 @@ messages:
   help_reload: "&e/chatgpt reload - 重新加载配置文件"
   help_model: "&e/chatgpt model <model_name> - 切换至其他模型"
   help_modellist: "&e/chatgpt modellist - 可用的模型列表"
+  current_model_info: "&e当前模型：%s，输入 /chatgpt model <model_name> 来切换模型。"
   model_switch: "&a已切换至模型 %s"
   chatgpt_error: "&c无法联系ChatGPT。"
   chatgpt_response: "&bChatGPT: %s"
@@ -39,4 +40,4 @@ messages:
   available_models: "&e可用模型列表："
   no_permission: "&c你没有权限使用这个指令。需要的权限：%s"
 # 不要动！！！！！
-version: 2.1
+version: 2.2

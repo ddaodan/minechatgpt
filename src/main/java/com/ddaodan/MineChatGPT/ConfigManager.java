@@ -7,6 +7,7 @@ import java.util.List;
 public class ConfigManager {
     private final Main plugin;
     private FileConfiguration config;
+    private String currentModel;
 
     public ConfigManager(Main plugin) {
         this.plugin = plugin;
@@ -16,10 +17,19 @@ public class ConfigManager {
     public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();
+        currentModel = config.getString("default_model");
     }
 
     private String translateColorCodes(String message) {
         return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
+    public String getCurrentModel() {
+        return currentModel;
+    }
+
+    public void setCurrentModel(String model) {
+        currentModel = model;
     }
     public String getConfigVersion() {
         return config.getString("version", "1.0");
@@ -90,5 +100,9 @@ public class ConfigManager {
 
     public String getNoPermissionMessage() {
         return translateColorCodes(config.getString("messages.no_permission"));
+    }
+
+    public String getCurrentModelInfoMessage() {
+        return translateColorCodes(config.getString("messages.current_model_info"));
     }
 }
