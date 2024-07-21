@@ -23,6 +23,8 @@ public class MineChatGPTTabCompleter implements TabCompleter {
             completions.add("reload");
             completions.add("model");
             completions.add("modellist");
+            completions.add("context");
+            completions.add("clear");
         } else if (args.length == 2 && args[0].equalsIgnoreCase("model")) {
             // 补全模型名称
             completions.addAll(configManager.getModels());

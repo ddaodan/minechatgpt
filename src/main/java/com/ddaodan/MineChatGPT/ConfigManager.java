@@ -13,7 +13,9 @@ public class ConfigManager {
         this.plugin = plugin;
         reloadConfig();
     }
-
+    public boolean isDebugMode() {
+        return config.getBoolean("debug", false);
+    }
     public void reloadConfig() {
         plugin.reloadConfig();
         config = plugin.getConfig();
@@ -74,6 +76,15 @@ public class ConfigManager {
         return translateColorCodes(config.getString("messages.help_modellist"));
     }
 
+
+    public String getHelpContextMessage() {
+        return translateColorCodes(config.getString("messages.help_context", "/chatgpt context - Toggle context mode."));
+    }
+
+    public String getHelpClearMessage() {
+        return translateColorCodes(config.getString("messages.help_clear", "/chatgpt clear - Clear conversation history."));
+    }
+
     public String getModelSwitchMessage() {
         return translateColorCodes(config.getString("messages.model_switch"));
     }
@@ -104,5 +115,28 @@ public class ConfigManager {
 
     public String getCurrentModelInfoMessage() {
         return translateColorCodes(config.getString("messages.current_model_info"));
+    }
+
+    public int getMaxHistorySize() {
+        return config.getInt("conversation.max_history_size", 10);
+    }
+
+    public boolean isContextEnabled() {
+        return config.getBoolean("conversation.context_enabled", false);
+    }
+
+    public String getContextToggleMessage() {
+        return translateColorCodes(config.getString("messages.context_toggle", "Context is now %s."));
+    }
+    public String getContextToggleEnabledMessage() {
+        return translateColorCodes(config.getString("messages.context_toggle_enabled", "enabled"));
+    }
+
+    public String getContextToggleDisabledMessage() {
+        return translateColorCodes(config.getString("messages.context_toggle_disabled", "disabled"));
+    }
+
+    public String getClearMessage() {
+        return translateColorCodes(config.getString("messages.clear", "Conversation history has been cleared."));
     }
 }

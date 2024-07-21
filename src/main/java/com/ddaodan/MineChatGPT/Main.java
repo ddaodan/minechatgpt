@@ -20,6 +20,9 @@ public final class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("chatgpt")).setExecutor(commandHandler);
         Objects.requireNonNull(getCommand("chatgpt")).setTabCompleter(tabCompleter);
         checkAndUpdateConfig();
+        if (configManager.isDebugMode()) {
+            getLogger().info( "DEBUG MODE IS TRUE!!!!!");
+        }
         // Initialize bStats
         int pluginId = 22635;
         new Metrics(this, pluginId);

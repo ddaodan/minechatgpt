@@ -21,3 +21,9 @@ permissions:
   minechatgpt.modellist:
     description: Allows listing available models
     default: op
+  minechatgpt.context:
+    description: Allows toggling context mode
+    default: true
+  chatgpt.clear:
+    description: Allows clearing conversation history
+    default: true

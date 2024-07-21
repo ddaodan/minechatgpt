@@ -23,14 +23,23 @@ models:
   # And more...
 # The default model to use
 default_model: "gpt-3.5-turbo"
+conversation:
+  max_history_size: 10
+  context_enabled: false
 # Message settings
 messages:
   reload: "&aConfiguration reloaded successfully!"
+  clear: "Conversation history has been cleared!"
   help: "&e===== MineChatGPT Help ====="
   help_ask: "&e/chatgpt <text> - Ask ChatGPT a question."
   help_reload: "&e/chatgpt reload - Reload the configuration file."
   help_model: "&e/chatgpt model <model_name> - Switch to a different model."
   help_modellist: "&e/chatgpt modellist - List available models."
+  help_context: "/chatgpt context - Toggle context mode."
+  help_clear: "/chatgpt clear - Clear conversation history."
+  context_toggle: "Context is now %s."
+  context_toggle_enabled: "enabled"
+  context_toggle_disabled: "disabled"
   current_model_info: "&eCurrent model: %s. Use /chatgpt model <model_name> to switch models."
   model_switch: "&aModel switched to %s"
   chatgpt_error: "&cFailed to contact ChatGPT."
@@ -39,5 +48,7 @@ messages:
   invalid_model: "&cInvalid model. Use /chatgpt modellist to see available models."
   available_models: "&eAvailable models:"
   no_permission: "&cYou do not have permission to use this command. Required permission: %s"
+# If you don't know what this is, don't change it
+debug: false
 # DO NOT EDIT!!!!!
 version: 2.2

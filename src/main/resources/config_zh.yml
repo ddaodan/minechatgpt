@@ -23,14 +23,23 @@ models:
   # 以及更多...
 # 默认使用的模型
 default_model: "gpt-3.5-turbo"
+conversation:
+  max_history_size: 10
+  context_enabled: false
 # 消息相关设置
 messages:
   reload: "&a已重新加载配置文件！"
+  clear: "&a对话历史已清空！"
   help: "&e===== MineChatGPT 帮助 ====="
   help_ask: "&e/chatgpt <text> - 向ChatGPT提问"
   help_reload: "&e/chatgpt reload - 重新加载配置文件"
   help_model: "&e/chatgpt model <model_name> - 切换至其他模型"
   help_modellist: "&e/chatgpt modellist - 可用的模型列表"
+  help_context: "&e/chatgpt context - 切换连续对话模式"
+  help_clear: "/chatgpt clear - 清空对话历史"
+  context_toggle: "&a连续对话模式已%s。"
+  context_toggle_enabled: "开启"
+  context_toggle_disabled: "关闭"
   current_model_info: "&e当前模型：%s，输入 /chatgpt model <model_name> 来切换模型。"
   model_switch: "&a已切换至模型 %s"
   chatgpt_error: "&c无法联系ChatGPT。"
@@ -39,5 +48,7 @@ messages:
   invalid_model: "&c模型无效。使用 /chatgpt modellist 查看可用模型。"
   available_models: "&e可用模型列表："
   no_permission: "&c你没有权限使用这个指令。需要的权限：%s"
+# 如果你不知道这是什么，请不要动
+debug: false
 # 不要动！！！！！
 version: 2.2

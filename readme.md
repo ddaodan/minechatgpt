@@ -13,13 +13,24 @@
 - [ ] 自定义prompt
 
 ## 安装
-- 下载插件，放在plugins文件夹中
-- 重启服务器
+1. 下载插件，放在plugins文件夹中
+2. 重启服务器
 > 为兼容更多版本，插件使用1.13版本进行构建，因此在较高版本加载插件时，控制台会出现以下错误信息，这属于正常现象。  
 > ```
 > [Server thread/WARN]: Initializing Legacy Material Support. Unless you have legacy plugins and/or data this is a bug!
 > [Server thread/WARN]: Legacy plugin MineChatGPT v1.0 does not specify an api-version.
 > ```
+3. 打开配置文件`config.yml`，修改以下两项设置：
+```yaml
+# API 相关设置
+api:
+  # 你的 OpenAI API key，用于身份验证
+  # 获取 API key 的方法：访问 https://platform.openai.com/account/api-keys 并创建一个新的 API key
+  key: "sk-your_openai_api_key"
+  # OpenAI API 的基础 URL，用于构建请求
+  base_url: "https://api.openai.com/v1"
+```
+4. 输入`/chatgpt reload`重新加载配置文件
 
 ## 截图
 - 服务端截图（Spigot 1.20.1）
@@ -95,6 +106,7 @@ version: 2.1
 |Mohist 1.20.1|✔|
 |Spigot 1.20.1|✔|
 |Spigot 1.12.2|✔|
+|KCauldron 1.7.10|×|
 
 ## 常见问题
 ### `Failed to contact ChatGPT.` `无法联系ChatGPT。`

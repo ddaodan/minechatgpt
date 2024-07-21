@@ -9,6 +9,10 @@ import org.json.JSONObject;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.io.UnsupportedEncodingException;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
@@ -16,20 +20,33 @@ public class CommandHandler implements CommandExecutor {
     private final Main plugin;
     private final ConfigManager configManager;
     private static final Logger logger = Logger.getLogger(CommandHandler.class.getName());
+    private final Map<String, ConversationContext> userContexts;
+    private final Map<String, Boolean> userContextEnabled;
 
     public CommandHandler(Main plugin, ConfigManager configManager) {
         this.plugin = plugin;
         this.configManager = configManager;
+        this.userContexts = new HashMap<>();
+        this.userContextEnabled = new HashMap<>();
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        String userId = sender.getName();
+
+        if (!userContexts.containsKey(userId)) {
+            userContexts.put(userId, new ConversationContext(configManager.getMaxHistorySize()));
+            userContextEnabled.put(userId, configManager.isContextEnabled()); // 使用配置文件中的默认值
+        }
+
+        ConversationContext conversationContext = userContexts.get(userId);
+        boolean contextEnabled = userContextEnabled.get(userId);
+
         if (command.getName().equalsIgnoreCase("chatgpt")) {
             if (args.length == 0) {
                 sendHelpMessage(sender);
                 return true;
             }
-
             String subCommand = args[0];
             if (subCommand.equalsIgnoreCase("reload")) {
                 if (!sender.hasPermission("minechatgpt.reload")) {
@@ -70,6 +87,20 @@ public class CommandHandler implements CommandExecutor {
                     sender.sendMessage("- " + model);
                 }
                 return true;
+            } else if (args.length > 0 && args[0].equalsIgnoreCase("context")) {
+                contextEnabled = !contextEnabled; // 切换上下文开关状态
+                userContextEnabled.put(userId, contextEnabled);
+                String status = contextEnabled ? configManager.getContextToggleEnabledMessage() : configManager.getContextToggleDisabledMessage();
+                sender.sendMessage(configManager.getContextToggleMessage().replace("%s", status));
+                return true;
+            } else if (subCommand.equalsIgnoreCase("clear")) {
+                if (!sender.hasPermission("minechatgpt.clear")) {
+                    sender.sendMessage(configManager.getNoPermissionMessage().replace("%s", "minechatgpt.clear"));
+                    return true;
+                }
+                conversationContext.clearHistory();
+                sender.sendMessage(configManager.getClearMessage());
+                return true;
             } else {
                 if (!sender.hasPermission("minechatgpt.use")) {
                     sender.sendMessage(configManager.getNoPermissionMessage().replace("%s", "minechatgpt.use"));
@@ -77,49 +108,91 @@ public class CommandHandler implements CommandExecutor {
                 }
                 String question = String.join(" ", args);
                 // Logic to send question to ChatGPT
+                if (contextEnabled) {
+                    conversationContext.addMessage(question); // 仅在启用上下文时添加到历史记录
+                }
                 sender.sendMessage(configManager.getQuestionMessage().replace("%s", question));
-                askChatGPT(sender, question);
+                askChatGPT(sender, question, conversationContext, contextEnabled);
                 return true;
             }
         }
         return false;
     }
 
-    private void askChatGPT(CommandSender sender, String question) {
+    private void askChatGPT(CommandSender sender, String question, ConversationContext conversationContext, boolean contextEnabled) {
+
+        logger.info("Original question: " + question);
+        // 尝试将问题转换为 UTF-8 编码
+        String utf8Question = convertToUTF8(question);
+        logger.info("Converted question: " + utf8Question);
         JSONObject json = new JSONObject();
         json.put("model", configManager.getDefaultModel());
         JSONArray messages = new JSONArray();
         JSONObject message = new JSONObject();
         message.put("role", "user");
-        message.put("content", question);
+        message.put("content", utf8Question);
+        //message.put("content", question);
         messages.put(message);
+        if (contextEnabled) {
+            String history = conversationContext.getConversationHistory();
+            if (!history.isEmpty()) {
+                JSONObject historyMessage = new JSONObject();
+                historyMessage.put("role", "system");
+                historyMessage.put("content", history);
+                messages.put(historyMessage);
+            }
+        }
         json.put("messages", messages);
         json.put("model", configManager.getCurrentModel());
+        // 记录构建的请求
+        logger.info("Built request: " + json.toString());
 
         HttpRequest request = HttpRequest.post(configManager.getBaseUrl() + "/chat/completions")
                 .header("Content-Type", "application/json")
                 .header("Authorization", "Bearer " + configManager.getApiKey())
                 .body(json.toString());
 
+        if (configManager.isDebugMode()) {
+            logger.info("Sending request to ChatGPT: " + request.toString());
+        }
+
         HttpResponse response = request.send();
+
+        if (configManager.isDebugMode()) {
+            logger.info("Received response from ChatGPT: " + response.toString());
+        }
 
         if (response.statusCode() == 200) {
             String responseBody = response.bodyText();
             JSONObject jsonResponse = new JSONObject(responseBody);
             String answer = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
             sender.sendMessage(configManager.getChatGPTResponseMessage().replace("%s", answer));
+            if (contextEnabled) {
+                conversationContext.addMessage(answer); // 仅在启用上下文时添加AI响应到历史记录
+            }
         } else {
             String errorBody = response.bodyText();
             logger.log(Level.SEVERE, "Failed to get a response from ChatGPT: " + errorBody);
             sender.sendMessage(configManager.getChatGPTErrorMessage());
         }
     }
-
+    private String convertToUTF8(String input) {
+        try {
+            // 尝试将输入字符串转换为 UTF-8 编码
+            byte[] bytes = input.getBytes(StandardCharsets.UTF_8);
+            return new String(bytes, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            logger.severe("Failed to convert input to UTF-8: " + e.getMessage());
+            return input; // 如果转换失败，返回原始输入
+        }
+    }
     private void sendHelpMessage(CommandSender sender) {
         sender.sendMessage(configManager.getHelpMessage());
         sender.sendMessage(configManager.getHelpAskMessage());
         sender.sendMessage(configManager.getHelpReloadMessage());
         sender.sendMessage(configManager.getHelpModelMessage());
         sender.sendMessage(configManager.getHelpModelListMessage());
+        sender.sendMessage(configManager.getHelpContextMessage());
+        sender.sendMessage(configManager.getHelpClearMessage());
     }
 }
