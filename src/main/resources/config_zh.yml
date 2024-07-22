@@ -14,6 +14,7 @@ models:
   - "gpt-4-turbo"
   - "gpt-4-turbo-preview"
   - "gpt-4o"
+  - "gpt-4o-mini"
   # Google Gemini
   # - "gemini-pro"
   # - "gemini-1.5-pro"
@@ -24,8 +25,9 @@ models:
 # 默认使用的模型
 default_model: "gpt-3.5-turbo"
 conversation:
-  max_history_size: 10
+  # 连续对话开关
   context_enabled: false
+  max_history_size: 10
 # 消息相关设置
 messages:
   reload: "&a已重新加载配置文件！"
@@ -51,4 +53,4 @@ messages:
 # 如果你不知道这是什么，请不要动
 debug: false
 # 不要动！！！！！
-version: 2.2
+version: 2.3

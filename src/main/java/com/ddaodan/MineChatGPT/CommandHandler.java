@@ -148,9 +148,9 @@ public class CommandHandler implements CommandExecutor {
         logger.info("Built request: " + json.toString());
 
         HttpRequest request = HttpRequest.post(configManager.getBaseUrl() + "/chat/completions")
-                .header("Content-Type", "application/json")
+                .header("Content-Type", "application/json; charset=UTF-8")
                 .header("Authorization", "Bearer " + configManager.getApiKey())
-                .body(json.toString());
+                .bodyText(json.toString());
 
         if (configManager.isDebugMode()) {
             logger.info("Sending request to ChatGPT: " + request.toString());

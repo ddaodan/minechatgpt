@@ -57,6 +57,7 @@ models:
   - "gpt-4-turbo"
   - "gpt-4-turbo-preview"
   - "gpt-4o"
+  - "gpt-4o-mini"
   # Google Gemini
   # - "gemini-pro"
   # - "gemini-1.5-pro"
@@ -66,6 +67,10 @@ models:
   # 以及更多...
 # 默认使用的模型
 default_model: "gpt-3.5-turbo"
+conversation:
+  # 连续对话开关
+  context_enabled: false
+  max_history_size: 10
 # 消息相关设置
 messages:
   reload: "&a已重新加载配置文件！"
@@ -83,7 +88,7 @@ messages:
   available_models: "&e可用模型列表："
   no_permission: "&c你没有权限使用这个指令。需要的权限：%s"
 # 不要动！！！！！
-version: 2.1
+version: 2.3
 ```
 
 ## 指令与权限
