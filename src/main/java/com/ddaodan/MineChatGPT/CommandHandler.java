@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.nio.charset.StandardCharsets;
-import java.io.UnsupportedEncodingException;
 
 import jodd.http.HttpRequest;
 import jodd.http.HttpResponse;
@@ -36,7 +36,7 @@ public class CommandHandler implements CommandExecutor {
 
         if (!userContexts.containsKey(userId)) {
             userContexts.put(userId, new ConversationContext(configManager.getMaxHistorySize()));
-            userContextEnabled.put(userId, configManager.isContextEnabled()); // 使用配置文件中的默认值
+            userContextEnabled.put(userId, configManager.isContextEnabled());
         }
 
         ConversationContext conversationContext = userContexts.get(userId);
@@ -69,7 +69,6 @@ public class CommandHandler implements CommandExecutor {
                 String model = args[1];
                 List<String> models = configManager.getModels();
                 if (models.contains(model)) {
-                    // Logic to switch model
                     configManager.setCurrentModel(model);
                     sender.sendMessage(configManager.getModelSwitchMessage().replace("%s", model));
                 } else {
@@ -88,7 +87,7 @@ public class CommandHandler implements CommandExecutor {
                 }
                 return true;
             } else if (args.length > 0 && args[0].equalsIgnoreCase("context")) {
-                contextEnabled = !contextEnabled; // 切换上下文开关状态
+                contextEnabled = !contextEnabled;
                 userContextEnabled.put(userId, contextEnabled);
                 String status = contextEnabled ? configManager.getContextToggleEnabledMessage() : configManager.getContextToggleDisabledMessage();
                 sender.sendMessage(configManager.getContextToggleMessage().replace("%s", status));
@@ -107,9 +106,8 @@ public class CommandHandler implements CommandExecutor {
                     return true;
                 }
                 String question = String.join(" ", args);
-                // Logic to send question to ChatGPT
                 if (contextEnabled) {
-                    conversationContext.addMessage(question); // 仅在启用上下文时添加到历史记录
+                    conversationContext.addMessage(question);
                 }
                 sender.sendMessage(configManager.getQuestionMessage().replace("%s", question));
                 askChatGPT(sender, question, conversationContext, contextEnabled);
@@ -120,11 +118,7 @@ public class CommandHandler implements CommandExecutor {
     }
 
     private void askChatGPT(CommandSender sender, String question, ConversationContext conversationContext, boolean contextEnabled) {
-
-        logger.info("Original question: " + question);
-        // 尝试将问题转换为 UTF-8 编码
         String utf8Question = convertToUTF8(question);
-        logger.info("Converted question: " + utf8Question);
         JSONObject json = new JSONObject();
         json.put("model", configManager.getDefaultModel());
         JSONArray messages = new JSONArray();
@@ -151,8 +145,9 @@ public class CommandHandler implements CommandExecutor {
         }
         json.put("messages", messages);
         json.put("model", configManager.getCurrentModel());
-        // 记录构建的请求
-        logger.info("Built request: " + json.toString());
+        if (configManager.isDebugMode()) {
+            logger.info("Built request: " + json.toString());
+        }
 
         HttpRequest request = HttpRequest.post(configManager.getBaseUrl() + "/chat/completions")
                 .header("Content-Type", "application/json; charset=UTF-8")
@@ -163,26 +158,33 @@ public class CommandHandler implements CommandExecutor {
             logger.info("Sending request to ChatGPT: " + request.toString());
         }
 
-        HttpResponse response = request.send();
-
-        if (configManager.isDebugMode()) {
-            logger.info("Received response from ChatGPT: " + response.toString());
-        }
-
-        if (response.statusCode() == 200) {
-            String responseBody = response.bodyText();
-            JSONObject jsonResponse = new JSONObject(responseBody);
-            String answer = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
-            sender.sendMessage(configManager.getChatGPTResponseMessage().replace("%s", answer));
-            if (contextEnabled) {
-                conversationContext.addMessage(answer); // 仅在启用上下文时添加AI响应到历史记录
-            }
-        } else {
-            String errorBody = response.bodyText();
-            logger.log(Level.SEVERE, "Failed to get a response from ChatGPT: " + errorBody);
-            sender.sendMessage(configManager.getChatGPTErrorMessage());
-        }
+        //HttpResponse response = request.send();
+        CompletableFuture.supplyAsync(() -> request.send())
+                .thenAccept(response -> {
+                    if (configManager.isDebugMode()) {
+                        logger.info("Received response from ChatGPT: " + response.toString());
+                    }
+                    if (response.statusCode() == 200) {
+                        String responseBody = response.bodyText();
+                        JSONObject jsonResponse = new JSONObject(responseBody);
+                        String answer = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+                        sender.sendMessage(configManager.getChatGPTResponseMessage().replace("%s", answer));
+                        if (contextEnabled) {
+                            conversationContext.addMessage(answer); // 仅在启用上下文时添加AI响应到历史记录
+                        }
+                    } else {
+                        String errorBody = response.bodyText();
+                        logger.log(Level.SEVERE, "Failed to get a response from ChatGPT: " + errorBody);
+                        sender.sendMessage(configManager.getChatGPTErrorMessage());
+                    }
+                })
+                .exceptionally(e -> {
+                    logger.log(Level.SEVERE, "Exception occurred while processing request: " + e.getMessage(), e);
+                    sender.sendMessage(configManager.getChatGPTErrorMessage());
+                    return null;
+                });
     }
+
     private String convertToUTF8(String input) {
         try {
             // 尝试将输入字符串转换为 UTF-8 编码
