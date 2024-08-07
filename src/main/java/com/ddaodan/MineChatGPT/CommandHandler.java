@@ -128,10 +128,17 @@ public class CommandHandler implements CommandExecutor {
         JSONObject json = new JSONObject();
         json.put("model", configManager.getDefaultModel());
         JSONArray messages = new JSONArray();
+        // 添加自定义 prompt
+        String customPrompt = configManager.getCustomPrompt();
+        if (!customPrompt.isEmpty()) {
+            JSONObject promptMessage = new JSONObject();
+            promptMessage.put("role", "system");
+            promptMessage.put("content", customPrompt);
+            messages.put(promptMessage);
+        }
         JSONObject message = new JSONObject();
         message.put("role", "user");
         message.put("content", utf8Question);
-        //message.put("content", question);
         messages.put(message);
         if (contextEnabled) {
             String history = conversationContext.getConversationHistory();

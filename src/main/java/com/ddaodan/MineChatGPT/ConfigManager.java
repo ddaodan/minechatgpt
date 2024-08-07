@@ -56,6 +56,10 @@ public class ConfigManager {
         return config.getStringList("models");
     }
 
+    public String getCustomPrompt() {
+        return config.getString("prompt", "You are a helpful assistant.");
+    }
+
     public String getHelpMessage() {
         return translateColorCodes(config.getString("messages.help"));
     }

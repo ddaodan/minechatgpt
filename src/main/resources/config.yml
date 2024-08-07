@@ -28,6 +28,7 @@ conversation:
   # Continuous conversation switch
   context_enabled: false
   max_history_size: 10
+prompt: "You are a helpful assistant."
 # Message settings
 messages:
   reload: "&aConfiguration reloaded successfully!"
@@ -53,4 +54,4 @@ messages:
 # If you don't know what this is, don't change it
 debug: false
 # DO NOT EDIT!!!!!
-version: 2.3
+version: 2.4
