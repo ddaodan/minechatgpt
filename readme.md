@@ -71,14 +71,21 @@ conversation:
   # 连续对话开关
   context_enabled: false
   max_history_size: 10
+prompt: "You are a helpful assistant.use Chinese."
 # 消息相关设置
 messages:
   reload: "&a已重新加载配置文件！"
+  clear: "&a对话历史已清空！"
   help: "&e===== MineChatGPT 帮助 ====="
   help_ask: "&e/chatgpt <text> - 向ChatGPT提问"
   help_reload: "&e/chatgpt reload - 重新加载配置文件"
   help_model: "&e/chatgpt model <model_name> - 切换至其他模型"
   help_modellist: "&e/chatgpt modellist - 可用的模型列表"
+  help_context: "&e/chatgpt context - 切换连续对话模式"
+  help_clear: "/chatgpt clear - 清空对话历史"
+  context_toggle: "&a连续对话模式已%s。"
+  context_toggle_enabled: "开启"
+  context_toggle_disabled: "关闭"
   current_model_info: "&e当前模型：%s，输入 /chatgpt model <model_name> 来切换模型。"
   model_switch: "&a已切换至模型 %s"
   chatgpt_error: "&c无法联系ChatGPT。"
@@ -87,8 +94,8 @@ messages:
   invalid_model: "&c模型无效。使用 /chatgpt modellist 查看可用模型。"
   available_models: "&e可用模型列表："
   no_permission: "&c你没有权限使用这个指令。需要的权限：%s"
-# 不要动！！！！！
-version: 2.3
+# 如果你不知道这是什么，请不要动
+debug: false
 ```
 
 ## 指令与权限
@@ -101,17 +108,15 @@ version: 2.3
 |`/chatgpt modellist`|chatgpt.modellist|查看可用的模型列表|
 
 ## 兼容的版本
-✔ = 完全支持  
-？ = 部分支持  
-× = 不支持  
 只列出经过测试的版本
 
 |服务端|支持情况|
 |-|-|
-|Mohist 1.20.1|✔|
-|Spigot 1.20.1|✔|
-|Spigot 1.12.2|✔|
-|KCauldron 1.7.10|×|
+|Luminol 1.21|✔ 支持|
+|Mohist 1.20.1|✔ 支持|
+|Spigot 1.20.1|✔ 支持|
+|Spigot 1.12.2|✔ 支持|
+|KCauldron 1.7.10|× 不支持|
 
 ## 常见问题
 ### `Failed to contact ChatGPT.` `无法联系ChatGPT。`
@@ -123,6 +128,8 @@ version: 2.3
 ## 我没有ChatGPT的账号，可以用吗？
 可以，目前有很多代理网站，可以很轻松地使用，而且还支持其他模型，费用通常来说也会比官方便宜。如果你愿意，也可以使用我的代理，目前仅在我的QQ群：226385797中提供。
 ### 是否会支持Folia
-不会。Folia仍然在开发中，短期内不会支持。
+理论上插件可以在Folia上运行，但插件的代码并没有针对Folia进行过优化，因此可能会有一些问题。如果你愿意，可以尝试使用Folia运行插件，但不保证插件可以正常运行。
 ## 赞助
 ![afdian-ddaodan.jpeg](https://i.ddaodan.cn/images/afdian-ddaodan.jpeg)
+## 统计
+![](https://bstats.org/signatures/bukkit/MineChatGPT.svg)

@@ -53,5 +53,3 @@ messages:
   no_permission: "&cYou do not have permission to use this command. Required permission: %s"
 # If you don't know what this is, don't change it
 debug: false
-# DO NOT EDIT!!!!!
-version: 2.4

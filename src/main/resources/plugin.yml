@@ -2,6 +2,7 @@ name: MineChatGPT
 version: '${version}'
 main: com.ddaodan.MineChatGPT.Main
 author: ddaodan
+folia-supported: true
 description: A Spigot plugin for interacting with ChatGPT
 
 commands:

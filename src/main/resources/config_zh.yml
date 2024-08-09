@@ -28,6 +28,7 @@ conversation:
   # 连续对话开关
   context_enabled: false
   max_history_size: 10
+prompt: "You are a helpful assistant.use Chinese."
 # 消息相关设置
 messages:
   reload: "&a已重新加载配置文件！"
@@ -52,5 +53,3 @@ messages:
   no_permission: "&c你没有权限使用这个指令。需要的权限：%s"
 # 如果你不知道这是什么，请不要动
 debug: false
-# 不要动！！！！！
-version: 2.3
