@@ -14,9 +14,9 @@ public class ConversationContext {
 
     public void addMessage(String message) {
         if (conversationHistory.size() >= maxHistorySize) {
-            conversationHistory.poll(); // Remove the oldest message
+            conversationHistory.poll();
         }
-        conversationHistory.offer(message); // Add the new message
+        conversationHistory.offer(message);
     }
 
     public String getConversationHistory() {

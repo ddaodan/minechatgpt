@@ -166,7 +166,8 @@ public class CommandHandler implements CommandExecutor {
                     }
                     if (response.statusCode() == 200) {
                         String responseBody = response.bodyText();
-                        JSONObject jsonResponse = new JSONObject(responseBody);
+                        String utf8ResponseBody = new String(responseBody.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+                        JSONObject jsonResponse = new JSONObject(utf8ResponseBody);
                         String answer = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
                         sender.sendMessage(configManager.getChatGPTResponseMessage().replace("%s", answer));
                         if (contextEnabled) {

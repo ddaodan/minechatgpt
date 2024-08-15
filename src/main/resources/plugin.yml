@@ -25,6 +25,6 @@ permissions:
   minechatgpt.context:
     description: Allows toggling context mode
     default: true
-  chatgpt.clear:
+  minechatgpt.clear:
     description: Allows clearing conversation history
     default: true

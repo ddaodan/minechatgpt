@@ -5,17 +5,18 @@
 所有的代码都是ChatGPT写的哦
 
 ## 功能
-- [x] OpenAPI格式
-- [x] 自定义模型
-- [x] ChatGPT反代
-- [x] 指令补全
-- [ ] 上下文对话
-- [ ] 自定义prompt
+- OpenAPI格式
+- 自定义模型
+- ChatGPT反代
+- 指令补全
+- 上下文对话
+- 自定义prompt
+- Folia支持
 
 ## 安装
 1. 下载插件，放在plugins文件夹中
 2. 重启服务器
-> 为兼容更多版本，插件使用1.13版本进行构建，因此在较高版本加载插件时，控制台会出现以下错误信息，这属于正常现象。  
+> 为兼容更多版本，插件没有规定Bukkit API version，因此在较高版本加载插件时，控制台可能会出现以下错误信息，这属于正常现象。  
 > ```
 > [Server thread/WARN]: Initializing Legacy Material Support. Unless you have legacy plugins and/or data this is a bug!
 > [Server thread/WARN]: Legacy plugin MineChatGPT v1.0 does not specify an api-version.
@@ -30,7 +31,7 @@ api:
   # OpenAI API 的基础 URL，用于构建请求
   base_url: "https://api.openai.com/v1"
 ```
-4. 输入`/chatgpt reload`重新加载配置文件
+4. 在控制台中输入`/chatgpt reload`重新加载配置文件
 
 ## 截图
 - 服务端截图（Spigot 1.20.1）
@@ -101,11 +102,13 @@ debug: false
 ## 指令与权限
 |指令|权限|描述|
 |-|-|-|
-|`/chatgpt`|chatgpt.use|查看插件帮助|
-|`/chatgpt <text>`|chatgpt.use|向ChatGPT提问|
-|`/chatgpt reload`|chatgpt.reload|重新加载配置文件|
-|`/chatgpt model <model_name>`|chatgpt.model|切换至其他模型|
-|`/chatgpt modellist`|chatgpt.modellist|查看可用的模型列表|
+|`/chatgpt`|minechatgpt.use|查看插件帮助|
+|`/chatgpt <text>`|minechatgpt.use|向ChatGPT提问|
+|`/chatgpt reload`|minechatgpt.reload|重新加载配置文件|
+|`/chatgpt model <model_name>`|minechatgpt.model|切换至其他模型|
+|`/chatgpt modellist`|minechatgpt.modellist|查看可用的模型列表|
+|`/chatgpt context`|minechatgpt.context|切换连续对话模式|
+|`/chatgpt clear`|minechatgpt.clear|清空对话历史|
 
 ## 兼容的版本
 只列出经过测试的版本
@@ -119,17 +122,17 @@ debug: false
 |KCauldron 1.7.10|× 不支持|
 
 ## 常见问题
-### `Failed to contact ChatGPT.` `无法联系ChatGPT。`
+### 提问后显示`Failed to contact ChatGPT.` `无法联系ChatGPT。`
 检查控制台输出的错误内容。
-### `connect timeout` `connect reset`
+### 提问后后台有`connect timeout` `connect reset`等类似的提示
 检查`config.yml`中的`base_url`能否正常访问。如果你无法连接到OpenAI官方的API地址，可以考虑使用其他反代。
 ### 我可以添加其他模型吗？
 可以，只要模型支持OpenAI的API，就可以使用。
-## 我没有ChatGPT的账号，可以用吗？
+### 我没有ChatGPT的账号，可以用吗？
 可以，目前有很多代理网站，可以很轻松地使用，而且还支持其他模型，费用通常来说也会比官方便宜。如果你愿意，也可以使用我的代理，目前仅在我的QQ群：226385797中提供。
 ### 是否会支持Folia
 理论上插件可以在Folia上运行，但插件的代码并没有针对Folia进行过优化，因此可能会有一些问题。如果你愿意，可以尝试使用Folia运行插件，但不保证插件可以正常运行。
 ## 赞助
-![afdian-ddaodan.jpeg](https://i.ddaodan.cn/images/afdian-ddaodan.jpeg)
+[![](https://i.ddaodan.cn/images/afdian-ddaodan.jpeg)](https://afdian.com/a/ddaodan)
 ## 统计
-![](https://bstats.org/signatures/bukkit/MineChatGPT.svg)
+[![](https://bstats.org/signatures/bukkit/MineChatGPT.svg)](https://bstats.org/plugin/bukkit/MineChatGPT/22635)
