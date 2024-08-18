@@ -1,4 +1,8 @@
 # MineChatGPT
+![minechatgpt](https://socialify.git.ci/ddaodan/minechatgpt/image?description=1&descriptionEditable=%E5%9C%A8Minecraft%E4%B8%AD%E4%B8%8EChatGPT%E4%BA%A4%E6%B5%81&font=Inter&issues=1&language=1&name=1&pattern=Solid&stargazers=1&theme=Auto)
+![modrinth-gallery](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/documentation/modrinth-gallery_vector.svg) ![spigot](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/supported/spigot_vector.svg) ![paper](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/supported/paper_vector.svg) ![java8](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy-minimal/built-with/java8_vector.svg)
+![GitHub Release](https://img.shields.io/github/v/release/ddaodan/minechatgpt?label=version) ![bStats Servers](https://img.shields.io/bstats/servers/22635) ![bStats Players](https://img.shields.io/bstats/players/22635) ![Modrinth Downloads](https://img.shields.io/modrinth/dt/Op2X2eDG?logo=modrinth) ![Spiget Downloads](https://img.shields.io/spiget/downloads/118963?logo=spigotmc)
+
 在Minecraft中与ChatGPT交流  
 理论支持全版本，欢迎测试
 
@@ -124,7 +128,7 @@ debug: false
 ## 常见问题
 ### 提问后显示`Failed to contact ChatGPT.` `无法联系ChatGPT。`
 检查控制台输出的错误内容。
-### 提问后后台有`connect timeout` `connect reset`等类似的提示
+### 提问后控制台有`connect timeout` `connect reset`等类似的提示
 检查`config.yml`中的`base_url`能否正常访问。如果你无法连接到OpenAI官方的API地址，可以考虑使用其他反代。
 ### 我可以添加其他模型吗？
 可以，只要模型支持OpenAI的API，就可以使用。
