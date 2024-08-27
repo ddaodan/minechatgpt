@@ -24,30 +24,40 @@ models:
   # And more...
 # The default model to use
 default_model: "gpt-3.5-turbo"
+# Conversation setting
 conversation:
   # Continuous conversation switch
   context_enabled: false
+  # Maximum number of historical records retained
   max_history_size: 10
-prompt: "You are a helpful assistant."
+# Characters setting
+characters:
+  # Format:
+  # Character Name: "Character Prompt"
+  ChatGPT: "You are a helpful assistant."
 # Message settings
 messages:
   reload: "&aConfiguration reloaded successfully!"
-  clear: "Conversation history has been cleared!"
+  clear: "&aConversation history has been cleared!"
   help: "&e===== MineChatGPT Help ====="
   help_ask: "&e/chatgpt <text> - Ask ChatGPT a question."
   help_reload: "&e/chatgpt reload - Reload the configuration file."
   help_model: "&e/chatgpt model <model_name> - Switch to a different model."
   help_modellist: "&e/chatgpt modellist - List available models."
-  help_context: "/chatgpt context - Toggle context mode."
-  help_clear: "/chatgpt clear - Clear conversation history."
-  context_toggle: "Context is now %s."
-  context_toggle_enabled: "enabled"
-  context_toggle_disabled: "disabled"
+  help_context: "&e/chatgpt context - Toggle context mode."
+  help_clear: "&e/chatgpt clear - Clear conversation history."
+  help_character: "&e/chatgpt character [character_name] - List or switch to a character."
+  context_toggle: "&eContext is now %s."
+  context_toggle_enabled: "&aenabled"
+  context_toggle_disabled: "&cdisabled"
   current_model_info: "&eCurrent model: %s. Use /chatgpt model <model_name> to switch models."
   model_switch: "&aModel switched to %s"
   chatgpt_error: "&cFailed to contact ChatGPT."
-  chatgpt_response: "&bChatGPT: %s"
+  chatgpt_response: "&b%s: %s"
   question: "&bYou: %s"
+  character_switched: "&aSwitched to character: %s"
+  available_characters: "&eAvailable characters:"
+  invalid_character: "&cInvalid character. Use /chatgpt character to list available characters."
   invalid_model: "&cInvalid model. Use /chatgpt modellist to see available models."
   available_models: "&eAvailable models:"
   no_permission: "&cYou do not have permission to use this command. Required permission: %s"

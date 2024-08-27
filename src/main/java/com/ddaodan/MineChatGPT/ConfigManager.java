@@ -2,7 +2,10 @@ package com.ddaodan.MineChatGPT;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConfigManager {
     private final Main plugin;
@@ -46,9 +49,6 @@ public class ConfigManager {
     public List<String> getModels() {
         return config.getStringList("models");
     }
-    public String getCustomPrompt() {
-        return config.getString("prompt", "You are a helpful assistant.");
-    }
     public String getHelpMessage() {
         return translateColorCodes(config.getString("messages.help"));
     }
@@ -65,10 +65,13 @@ public class ConfigManager {
         return translateColorCodes(config.getString("messages.help_modellist"));
     }
     public String getHelpContextMessage() {
-        return translateColorCodes(config.getString("messages.help_context", "/chatgpt context - Toggle context mode."));
+        return translateColorCodes(config.getString("messages.help_context", "&e/chatgpt context - Toggle context mode."));
     }
     public String getHelpClearMessage() {
-        return translateColorCodes(config.getString("messages.help_clear", "/chatgpt clear - Clear conversation history."));
+        return translateColorCodes(config.getString("messages.help_clear", "&e/chatgpt clear - Clear conversation history."));
+    }
+    public String getHelpCharacterMessage() {
+        return translateColorCodes(config.getString("messages.help_character", "&e/chatgpt character [character_name] - List or switch to a character."));
     }
     public String getModelSwitchMessage() {
         return translateColorCodes(config.getString("messages.model_switch"));
@@ -77,7 +80,7 @@ public class ConfigManager {
         return translateColorCodes(config.getString("messages.chatgpt_error"));
     }
     public String getChatGPTResponseMessage() {
-        return translateColorCodes(config.getString("messages.chatgpt_response"));
+        return translateColorCodes(config.getString("messages.chatgpt_response", "&b%s: %s"));
     }
     public String getQuestionMessage() {
         return translateColorCodes(config.getString("messages.question"));
@@ -101,15 +104,38 @@ public class ConfigManager {
         return config.getBoolean("conversation.context_enabled", false);
     }
     public String getContextToggleMessage() {
-        return translateColorCodes(config.getString("messages.context_toggle", "Context is now %s."));
+        return translateColorCodes(config.getString("messages.context_toggle", "&eContext is now %s."));
     }
     public String getContextToggleEnabledMessage() {
-        return translateColorCodes(config.getString("messages.context_toggle_enabled", "enabled"));
+        return translateColorCodes(config.getString("messages.context_toggle_enabled", "&aenabled"));
     }
     public String getContextToggleDisabledMessage() {
-        return translateColorCodes(config.getString("messages.context_toggle_disabled", "disabled"));
+        return translateColorCodes(config.getString("messages.context_toggle_disabled", "&edisabled"));
     }
     public String getClearMessage() {
-        return translateColorCodes(config.getString("messages.clear", "Conversation history has been cleared."));
+        return translateColorCodes(config.getString("messages.clear", "&aConversation history has been cleared."));
+    }
+    public String getCharacterSwitchedMessage() {
+        return translateColorCodes(config.getString("messages.character_switched", "&aSwitched to character: %s"));
+    }
+    public String getAvailableCharactersMessage() {
+        return translateColorCodes(config.getString("messages.available_characters", "&eAvailable characters:"));
+    }
+    public String getInvalidCharacterMessage() {
+        return translateColorCodes(config.getString("messages.invalid_character", "&cInvalid character. Use /chatgpt character to list available characters."));
+    }
+    public Map<String, String> getCharacters() {
+        Map<String, String> characters = new HashMap<>();
+        config.getConfigurationSection("characters").getKeys(false).forEach(key -> {
+            characters.put(key, config.getString("characters." + key));
+        });
+        return characters;
+    }
+    public String getCurrentCharacter(String userId) {
+        return config.getString("users." + userId + ".character", "ChatGPT");
+    }
+    public void setCurrentCharacter(String userId, String character) {
+        config.set("users." + userId + ".character", character);
+        plugin.saveConfig();
     }
 }

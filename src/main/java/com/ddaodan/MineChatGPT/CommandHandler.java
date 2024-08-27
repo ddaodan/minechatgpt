@@ -100,6 +100,27 @@ public class CommandHandler implements CommandExecutor {
                 conversationContext.clearHistory();
                 sender.sendMessage(configManager.getClearMessage());
                 return true;
+            } else if (subCommand.equalsIgnoreCase("character")) {
+                    if (!sender.hasPermission("minechatgpt.character")) {
+                        sender.sendMessage(configManager.getNoPermissionMessage().replace("%s", "minechatgpt.character"));
+                        return true;
+                    }
+                    Map<String, String> characters = configManager.getCharacters();
+                    if (args.length < 2) {
+                        sender.sendMessage(configManager.getAvailableCharactersMessage());
+                        for (String character : characters.keySet()) {
+                            sender.sendMessage("- " + character);
+                        }
+                        return true;
+                    }
+                    String character = args[1];
+                    if (characters.containsKey(character)) {
+                        configManager.setCurrentCharacter(userId, character);
+                        sender.sendMessage(configManager.getCharacterSwitchedMessage().replace("%s", character));
+                    } else {
+                        sender.sendMessage(configManager.getInvalidCharacterMessage());
+                    }
+                    return true;
             } else {
                 if (!sender.hasPermission("minechatgpt.use")) {
                     sender.sendMessage(configManager.getNoPermissionMessage().replace("%s", "minechatgpt.use"));
@@ -110,21 +131,22 @@ public class CommandHandler implements CommandExecutor {
                     conversationContext.addMessage(question);
                 }
                 sender.sendMessage(configManager.getQuestionMessage().replace("%s", question));
-                askChatGPT(sender, question, conversationContext, contextEnabled);
+                askChatGPT(sender, question, conversationContext, contextEnabled, userId);
                 return true;
             }
         }
         return false;
     }
 
-    private void askChatGPT(CommandSender sender, String question, ConversationContext conversationContext, boolean contextEnabled) {
+    private void askChatGPT(CommandSender sender, String question, ConversationContext conversationContext, boolean contextEnabled, String userId) {
         String utf8Question = convertToUTF8(question);
         JSONObject json = new JSONObject();
         json.put("model", configManager.getDefaultModel());
         JSONArray messages = new JSONArray();
         // 添加自定义 prompt
-        String customPrompt = configManager.getCustomPrompt();
-        if (!customPrompt.isEmpty()) {
+        String currentCharacter = configManager.getCurrentCharacter(userId);
+        String customPrompt = configManager.getCharacters().get(currentCharacter);
+        if (customPrompt != null && !customPrompt.isEmpty()) {
             JSONObject promptMessage = new JSONObject();
             promptMessage.put("role", "system");
             promptMessage.put("content", customPrompt);
@@ -169,7 +191,7 @@ public class CommandHandler implements CommandExecutor {
                         String utf8ResponseBody = new String(responseBody.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
                         JSONObject jsonResponse = new JSONObject(utf8ResponseBody);
                         String answer = jsonResponse.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
-                        sender.sendMessage(configManager.getChatGPTResponseMessage().replace("%s", answer));
+                        sender.sendMessage(configManager.getChatGPTResponseMessage().replaceFirst("%s", currentCharacter).replaceFirst("%s", answer));
                         if (contextEnabled) {
                             conversationContext.addMessage(answer); // 仅在启用上下文时添加AI响应到历史记录
                         }
@@ -204,5 +226,6 @@ public class CommandHandler implements CommandExecutor {
         sender.sendMessage(configManager.getHelpModelListMessage());
         sender.sendMessage(configManager.getHelpContextMessage());
         sender.sendMessage(configManager.getHelpClearMessage());
+        sender.sendMessage(configManager.getHelpCharacterMessage());
     }
 }

@@ -25,9 +25,14 @@ public class MineChatGPTTabCompleter implements TabCompleter {
             completions.add("modellist");
             completions.add("context");
             completions.add("clear");
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("model")) {
-            // 补全模型名称
-            completions.addAll(configManager.getModels());
+            completions.add("character");
+        } else if (args.length == 2) {
+            String subCommand = args[0];
+            if (subCommand.equalsIgnoreCase("model")) {
+                completions.addAll(configManager.getModels());
+            } else if (subCommand.equalsIgnoreCase("character")) {
+                completions.addAll(configManager.getCharacters().keySet());
+            }
         }
 
         // 过滤补全列表以匹配输入

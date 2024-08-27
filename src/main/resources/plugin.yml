@@ -28,3 +28,6 @@ permissions:
   minechatgpt.clear:
     description: Allows clearing conversation history
     default: true
+  minechatgpt.character:
+    description: Allows switching characters
+    default: true
