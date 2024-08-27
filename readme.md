@@ -14,7 +14,7 @@
 - ChatGPT反代
 - 指令补全
 - 上下文对话
-- 自定义prompt
+- 多角色
 - Folia支持
 
 ## 安装
@@ -72,11 +72,17 @@ models:
   # 以及更多...
 # 默认使用的模型
 default_model: "gpt-3.5-turbo"
+# 连续对话设置
 conversation:
   # 连续对话开关
   context_enabled: false
+  # 最大历史记录保留数量
   max_history_size: 10
-prompt: "You are a helpful assistant.use Chinese."
+# 角色设置
+characters:
+  # 格式：
+  # 角色名称: "角色提示词"
+  ChatGPT: "You are a helpful assistant."
 # 消息相关设置
 messages:
   reload: "&a已重新加载配置文件！"
@@ -87,15 +93,19 @@ messages:
   help_model: "&e/chatgpt model <model_name> - 切换至其他模型"
   help_modellist: "&e/chatgpt modellist - 可用的模型列表"
   help_context: "&e/chatgpt context - 切换连续对话模式"
-  help_clear: "/chatgpt clear - 清空对话历史"
-  context_toggle: "&a连续对话模式已%s。"
-  context_toggle_enabled: "开启"
-  context_toggle_disabled: "关闭"
+  help_clear: "&e/chatgpt clear - 清空对话历史"
+  help_character: "&e/chatgpt character [character_name] - 列出或切换角色"
+  context_toggle: "&e连续对话模式已%s。"
+  context_toggle_enabled: "&a开启"
+  context_toggle_disabled: "&c关闭"
   current_model_info: "&e当前模型：%s，输入 /chatgpt model <model_name> 来切换模型。"
   model_switch: "&a已切换至模型 %s"
   chatgpt_error: "&c无法联系ChatGPT。"
-  chatgpt_response: "&bChatGPT: %s"
+  chatgpt_response: "&b%s: %s"
   question: "&b你: %s"
+  character_switched: "&a已切换至角色： %s"
+  available_characters: "&e可用的角色列表："
+  invalid_character: "&c无效的角色。使用 /chatgpt character 查看所有可用的角色。"
   invalid_model: "&c模型无效。使用 /chatgpt modellist 查看可用模型。"
   available_models: "&e可用模型列表："
   no_permission: "&c你没有权限使用这个指令。需要的权限：%s"
@@ -113,6 +123,7 @@ debug: false
 |`/chatgpt modellist`|minechatgpt.modellist|查看可用的模型列表|
 |`/chatgpt context`|minechatgpt.context|切换连续对话模式|
 |`/chatgpt clear`|minechatgpt.clear|清空对话历史|
+|`/chatgpt character [character_name]`|minechatgpt.character|列出或切换角色|
 
 ## 兼容的版本
 只列出经过测试的版本
