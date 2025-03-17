@@ -103,6 +103,6 @@
 ### 是否会支持Folia
 理论上插件可以在Folia上运行，但插件的代码并没有针对Folia进行过优化，因此可能会有一些问题。如果你愿意，可以尝试使用Folia运行插件，但不保证插件可以正常运行。
 ## 赞助
-[![](https://i.ddaodan.cn/images/afdian-ddaodan.jpeg)](https://afdian.com/a/ddaodan)
+[![](https://i.ddaodan.cc/images/afdian-ddaodan.jpeg)](https://afdian.com/a/ddaodan)
 ## 统计
 [![](https://bstats.org/signatures/bukkit/MineChatGPT.svg)](https://bstats.org/plugin/bukkit/MineChatGPT/22635)
