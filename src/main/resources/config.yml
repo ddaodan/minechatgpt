@@ -1,65 +1,104 @@
-# OpenAI API key setting
+# ======================================================
+# Language Settings
+# 语言设置
+# ======================================================
+# Available languages: en, zh
+# 可用语言：en（英文）, zh（中文）
+language: "en"
+# ======================================================
+# API Configuration
+# API 设置
+# ======================================================
 api:
-  # Your OpenAI API key, used for authentication
+  # Your OpenAI API keys, used for authentication
   # To obtain an API key, visit https://platform.openai.com/account/api-keys and create a new API key
-  key: "sk-your_openai_api_key"
+  # 你的 OpenAI API key，用于身份验证
+  # 获取 API key 的方法：访问 https://platform.openai.com/account/api-keys 并创建一个新的 API key
+  keys:
+    - "sk-your_openai_api_key_1"
+    # You can add multiple API keys below
+    # 可以添加多个API key
+    # - "sk-your_openai_api_key_2"
+    # - "sk-your_openai_api_key_3"
+  
+  # API key selection method: "round_robin" or "random"
+  # Round Robin: Use each API key in turn
+  # Random: Randomly select an API key
+  # API key 选择方法："round_robin"（轮询）或 "random"（随机）
+  # 轮询：依次使用每个API key
+  # 随机：随机选择一个API key
+  selection_method: "round_robin"
+  
   # The base URL for the OpenAI API, used to construct requests
+  # If you cannot access the official API, you can use a proxy service
+  # OpenAI API 的基础 URL，用于构建请求
+  # 如果你无法访问官方API，可以使用代理服务
   base_url: "https://api.openai.com/v1"
+# ======================================================
+# Model Configuration
+# 模型设置
+# ======================================================
 # List of supported models
+# 支持的模型列表
 models:
   # OpenAI ChatGPT
-  - "gpt-3.5-turbo"
-  - "gpt-3.5-turbo-instruct"
   - "gpt-4"
   - "gpt-4-turbo"
   - "gpt-4-turbo-preview"
   - "gpt-4o"
   - "gpt-4o-mini"
-  # Google Gemini
-  # - "gemini-pro"
-  # - "gemini-1.5-pro"
   # Anthropic Claude
   # - "claude-3-opus"
   # - "claude-3-5-sonnet"
+  # Deepseek
+  # - "deepseek-coder"
+  # - "deepseek-reasoner"
   # And more...
+  # 以及更多...
+
 # The default model to use
-default_model: "gpt-3.5-turbo"
-# Conversation setting
+# 默认使用的模型
+default_model: "gpt-4o-mini"
+# ======================================================
+# Conversation Settings
+# 对话设置
+# ======================================================
 conversation:
   # Continuous conversation switch
+  # When enabled, the plugin will remember the conversation history
+  # 连续对话开关
+  # 启用时，插件将记住对话历史
   context_enabled: false
+  
   # Maximum number of historical records retained
+  # Increasing this value will consume more memory
+  # 最大历史记录保留数量
+  # 增加此值将消耗更多内存
   max_history_size: 10
-# Characters setting
+# ======================================================
+# Character Settings
+# 角色设置
+# ======================================================
 characters:
   # Format:
   # Character Name: "Character Prompt"
+  # The prompt will be sent to the AI as a system message
+  # 格式：
+  # 角色名称: "角色提示词"
+  # 提示词将作为系统消息发送给AI
+  
+  # Default character
   ChatGPT: "You are a helpful assistant."
-# Message settings
-messages:
-  reload: "&aConfiguration reloaded successfully!"
-  clear: "&aConversation history has been cleared!"
-  help: "&e===== MineChatGPT Help ====="
-  help_ask: "&e/chatgpt <text> - Ask ChatGPT a question."
-  help_reload: "&e/chatgpt reload - Reload the configuration file."
-  help_model: "&e/chatgpt model <model_name> - Switch to a different model."
-  help_modellist: "&e/chatgpt modellist - List available models."
-  help_context: "&e/chatgpt context - Toggle context mode."
-  help_clear: "&e/chatgpt clear - Clear conversation history."
-  help_character: "&e/chatgpt character [character_name] - List or switch to a character."
-  context_toggle: "&eContext is now %s."
-  context_toggle_enabled: "&aenabled"
-  context_toggle_disabled: "&cdisabled"
-  current_model_info: "&eCurrent model: %s. Use /chatgpt model <model_name> to switch models."
-  model_switch: "&aModel switched to %s"
-  chatgpt_error: "&cFailed to contact ChatGPT."
-  chatgpt_response: "&b%s: %s"
-  question: "&bYou: %s"
-  character_switched: "&aSwitched to character: %s"
-  available_characters: "&eAvailable characters:"
-  invalid_character: "&cInvalid character. Use /chatgpt character to list available characters."
-  invalid_model: "&cInvalid model. Use /chatgpt modellist to see available models."
-  available_models: "&eAvailable models:"
-  no_permission: "&cYou do not have permission to use this command. Required permission: %s"
+  
+  # You can add more characters below
+  # 你可以在下方添加更多角色
+  # Example:
+  # Minecraft: "You are a Minecraft expert who helps players with game mechanics and building ideas."
+
+# ======================================================
+# Other Settings
+# 其他设置
+# ======================================================
 # If you don't know what this is, don't change it
+# 如果你不知道这是什么，请不要动
 debug: false

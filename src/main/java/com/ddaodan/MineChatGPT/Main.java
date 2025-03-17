@@ -9,11 +9,15 @@ public final class Main extends JavaPlugin {
     private ConfigManager configManager;
     private CommandHandler commandHandler;
     private MineChatGPTTabCompleter tabCompleter;
+    private LanguageManager languageManager;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
         configManager = new ConfigManager(this);
+        // 初始化语言管理器
+        String language = getConfig().getString("language", "en");
+        languageManager = new LanguageManager(this, language);
         commandHandler = new CommandHandler(this, configManager);
         tabCompleter = new MineChatGPTTabCompleter(configManager);
         Objects.requireNonNull(getCommand("chatgpt")).setExecutor(commandHandler);

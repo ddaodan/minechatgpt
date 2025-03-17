@@ -4,7 +4,7 @@ plugins {
 }
 
 group = 'com'
-version = '2.6'
+version = '2.7'
 
 repositories {
     mavenCentral()
@@ -24,12 +24,22 @@ repositories {
 dependencies {
     compileOnly "org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT"
     implementation 'org.bstats:bstats-bukkit:3.0.2'
-    implementation 'org.jodd:jodd-http:6.3.0'
+    implementation('org.jodd:jodd-http:6.3.0') {
+        exclude group: 'org.jodd', module: 'jodd-core'
+        exclude group: 'org.jodd', module: 'jodd-bean'
+    }
     implementation 'org.json:json:20231013'
 }
 
 shadowJar {
     archiveFileName = "MineChatGPT-${project.version}.jar"
+    minimize()
+    mergeServiceFiles()
+
+    exclude 'META-INF/**'
+    exclude '**/*.properties'
+    exclude '**/jodd/http/upload/**'
+    
     relocate 'jodd', 'com.ddaodan.shaded.jodd'
     relocate 'org.json', 'com.ddaodan.minechatgpt.libs.org.json'
     relocate 'org.bstats', 'com.ddaodan.minechatgpt.libs.org.bstats'

@@ -11,10 +11,14 @@ public class ConfigManager {
     private final Main plugin;
     private FileConfiguration config;
     private String currentModel;
+    private LanguageManager languageManager;
 
     public ConfigManager(Main plugin) {
         this.plugin = plugin;
         reloadConfig();
+        // 获取语言设置
+        String language = config.getString("language", "en");
+        this.languageManager = new LanguageManager(plugin, language);
     }
     public boolean isDebugMode() {
         return config.getBoolean("debug", false);
@@ -23,6 +27,12 @@ public class ConfigManager {
         plugin.reloadConfig();
         config = plugin.getConfig();
         currentModel = config.getString("default_model");
+        
+        // 重新加载语言文件
+        if (languageManager != null) {
+            String language = config.getString("language", "en");
+            languageManager.setLanguage(language);
+        }
     }
 
     private String translateColorCodes(String message) {
@@ -34,8 +44,31 @@ public class ConfigManager {
     public void setCurrentModel(String model) {
         currentModel = model;
     }
+    private int currentKeyIndex = 0;
+    
     public String getApiKey() {
-        return config.getString("api.key");
+        List<String> keys = config.getStringList("api.keys");
+        if (keys.isEmpty()) {
+            // 向后兼容：如果没有找到keys列表，尝试使用旧的单一key配置
+            String legacyKey = config.getString("api.key");
+            if (legacyKey != null && !legacyKey.isEmpty()) {
+                return legacyKey;
+            }
+            return "";
+        }
+        
+        String selectionMethod = config.getString("api.selection_method", "round_robin");
+        
+        if ("random".equalsIgnoreCase(selectionMethod)) {
+            // 随机选择一个key
+            int randomIndex = (int) (Math.random() * keys.size());
+            return keys.get(randomIndex);
+        } else {
+            // 默认使用轮询方式
+            String key = keys.get(currentKeyIndex);
+            currentKeyIndex = (currentKeyIndex + 1) % keys.size();
+            return key;
+        }
     }
     public String getBaseUrl() {
         return config.getString("api.base_url");
@@ -44,58 +77,58 @@ public class ConfigManager {
         return config.getString("default_model");
     }
     public String getReloadMessage() {
-        return translateColorCodes(config.getString("messages.reload"));
+        return languageManager.getMessage("reload");
     }
     public List<String> getModels() {
         return config.getStringList("models");
     }
     public String getHelpMessage() {
-        return translateColorCodes(config.getString("messages.help"));
+        return languageManager.getMessage("help");
     }
     public String getHelpAskMessage() {
-        return translateColorCodes(config.getString("messages.help_ask"));
+        return languageManager.getMessage("help_ask");
     }
     public String getHelpReloadMessage() {
-        return translateColorCodes(config.getString("messages.help_reload"));
+        return languageManager.getMessage("help_reload");
     }
     public String getHelpModelMessage() {
-        return translateColorCodes(config.getString("messages.help_model"));
+        return languageManager.getMessage("help_model");
     }
     public String getHelpModelListMessage() {
-        return translateColorCodes(config.getString("messages.help_modellist"));
+        return languageManager.getMessage("help_modellist");
     }
     public String getHelpContextMessage() {
-        return translateColorCodes(config.getString("messages.help_context", "&e/chatgpt context - Toggle context mode."));
+        return languageManager.getMessage("help_context");
     }
     public String getHelpClearMessage() {
-        return translateColorCodes(config.getString("messages.help_clear", "&e/chatgpt clear - Clear conversation history."));
+        return languageManager.getMessage("help_clear");
     }
     public String getHelpCharacterMessage() {
-        return translateColorCodes(config.getString("messages.help_character", "&e/chatgpt character [character_name] - List or switch to a character."));
+        return languageManager.getMessage("help_character");
     }
     public String getModelSwitchMessage() {
-        return translateColorCodes(config.getString("messages.model_switch"));
+        return languageManager.getMessage("model_switch");
     }
     public String getChatGPTErrorMessage() {
-        return translateColorCodes(config.getString("messages.chatgpt_error"));
+        return languageManager.getMessage("chatgpt_error");
     }
     public String getChatGPTResponseMessage() {
-        return translateColorCodes(config.getString("messages.chatgpt_response", "&b%s: %s"));
+        return languageManager.getMessage("chatgpt_response", "&b%s: %s");
     }
     public String getQuestionMessage() {
-        return translateColorCodes(config.getString("messages.question"));
+        return languageManager.getMessage("question");
     }
     public String getInvalidModelMessage() {
-        return translateColorCodes(config.getString("messages.invalid_model"));
+        return languageManager.getMessage("invalid_model");
     }
     public String getAvailableModelsMessage() {
-        return translateColorCodes(config.getString("messages.available_models"));
+        return languageManager.getMessage("available_models");
     }
     public String getNoPermissionMessage() {
-        return translateColorCodes(config.getString("messages.no_permission"));
+        return languageManager.getMessage("no_permission");
     }
     public String getCurrentModelInfoMessage() {
-        return translateColorCodes(config.getString("messages.current_model_info"));
+        return languageManager.getMessage("current_model_info");
     }
     public int getMaxHistorySize() {
         return config.getInt("conversation.max_history_size", 10);
@@ -104,25 +137,25 @@ public class ConfigManager {
         return config.getBoolean("conversation.context_enabled", false);
     }
     public String getContextToggleMessage() {
-        return translateColorCodes(config.getString("messages.context_toggle", "&eContext is now %s."));
+        return languageManager.getMessage("context_toggle", "&eContext is now %s.");
     }
     public String getContextToggleEnabledMessage() {
-        return translateColorCodes(config.getString("messages.context_toggle_enabled", "&aenabled"));
+        return languageManager.getMessage("context_toggle_enabled", "&aenabled");
     }
     public String getContextToggleDisabledMessage() {
-        return translateColorCodes(config.getString("messages.context_toggle_disabled", "&edisabled"));
+        return languageManager.getMessage("context_toggle_disabled", "&edisabled");
     }
     public String getClearMessage() {
-        return translateColorCodes(config.getString("messages.clear", "&aConversation history has been cleared."));
+        return languageManager.getMessage("clear", "&aConversation history has been cleared.");
     }
     public String getCharacterSwitchedMessage() {
-        return translateColorCodes(config.getString("messages.character_switched", "&aSwitched to character: %s"));
+        return languageManager.getMessage("character_switched", "&aSwitched to character: %s");
     }
     public String getAvailableCharactersMessage() {
-        return translateColorCodes(config.getString("messages.available_characters", "&eAvailable characters:"));
+        return languageManager.getMessage("available_characters", "&eAvailable characters:");
     }
     public String getInvalidCharacterMessage() {
-        return translateColorCodes(config.getString("messages.invalid_character", "&cInvalid character. Use /chatgpt character to list available characters."));
+        return languageManager.getMessage("invalid_character", "&cInvalid character. Use /chatgpt character to list available characters.");
     }
     public Map<String, String> getCharacters() {
         Map<String, String> characters = new HashMap<>();
